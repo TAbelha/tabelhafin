@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+.bun/install/cache/
+
+# Build
+dist/
+.svelte-kit/
+.wrangler/
+
+# Env
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test
+coverage/
