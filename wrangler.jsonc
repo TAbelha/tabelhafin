@@ -11,13 +11,13 @@
     {
       "binding": "DB",
       "database_name": "tabelhafin-db",
-      "database_id": "TODO_CREATE_AND_FILL"
+      "database_id": "b1ec4cf7-fd3a-481e-8af6-c274dc7f275c"
     }
   ],
   "kv_namespaces": [
     {
       "binding": "DEVICE_TOKENS",
-      "id": "TODO_CREATE_AND_FILL"
+      "id": "712f4da0d5dd41d0820d31431aab4d03"
     }
   ],
   "vars": {
