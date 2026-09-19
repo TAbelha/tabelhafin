@@ -8,7 +8,12 @@
 	const NAV_ITEMS = [
 		{ href: resolve('/dashboard'), label: 'Dashboard' },
 		{ href: resolve('/transactions'), label: 'Transações' },
-		{ href: resolve('/new'), label: 'Nova' }
+		{ href: resolve('/new'), label: 'Nova' },
+		{ href: resolve('/accounts'), label: 'Contas' },
+		{ href: resolve('/categories'), label: 'Categorias' },
+		{ href: resolve('/tags'), label: 'Tags' },
+		{ href: resolve('/reports'), label: 'Relatórios' },
+		{ href: resolve('/profile'), label: 'Perfil' }
 	];
 
 	let mobileOpen = $state(false);
@@ -34,11 +39,7 @@
 
 	<!-- Mobile header -->
 	<header class="flex items-center border-b p-4 lg:hidden">
-		<button
-			class="mr-3 text-xl"
-			onclick={() => (mobileOpen = !mobileOpen)}
-			aria-label="Menu"
-		>
+		<button class="mr-3 text-xl" onclick={() => (mobileOpen = !mobileOpen)} aria-label="Menu">
 			&#9776;
 		</button>
 		<a href={resolve('/dashboard')} class="text-lg font-bold">TabelhaFin</a>
@@ -48,7 +49,13 @@
 	{#if mobileOpen}
 		<div class="fixed inset-0 z-40 bg-black/50" onclick={() => (mobileOpen = false)}></div>
 		<nav class="fixed left-0 top-0 z-50 flex h-full w-56 flex-col bg-background p-4 shadow-lg">
-			<a href={resolve('/dashboard')} class="mb-6 text-lg font-bold" onclick={() => (mobileOpen = false)}>TabelhaFin</a>
+			<a
+				href={resolve('/dashboard')}
+				class="mb-6 text-lg font-bold"
+				onclick={() => (mobileOpen = false)}
+			>
+				TabelhaFin
+			</a>
 			{#each NAV_ITEMS as item}
 				{@const active = page.url.pathname.startsWith(item.href)}
 				<Button
