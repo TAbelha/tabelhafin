@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
   if (!deviceToken)
     return json({ error: "Device token ausente." }, { status: 401 });
 
-  const userId = await platform!.env.SESSIONS.get(
+  const userId = await platform!.env.DEVICE_TOKENS.get(
     `${DEVICE_TOKEN_KV_PREFIX}${deviceToken}`,
   );
   if (!userId)

@@ -1,0 +1,26 @@
+{
+  "name": "tabelhafin",
+  "main": ".svelte-kit/output/server/index.js",
+  "compatibility_date": "2025-09-19",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".svelte-kit/cloudflare",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "tabelhafin-db",
+      "database_id": "TODO_CREATE_AND_FILL"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "DEVICE_TOKENS",
+      "id": "TODO_CREATE_AND_FILL"
+    }
+  ],
+  "vars": {
+    "BETTER_AUTH_URL": "https://tabelhafin.ianptkcs.workers.dev"
+  }
+}

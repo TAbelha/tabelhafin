@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
@@ -9,6 +10,23 @@
 	let { data } = $props();
 
 	let name = $state(data.user?.name ?? '');
+	let deleting = $state(false);
+	let erasing = $state(false);
+
+	async function deleteAccount() {
+		if (!confirm('Tem certeza? Esta ação é irreversível e apaga todos os seus dados.')) return;
+		deleting = true;
+		const res = await fetch('/api/account/delete', { method: 'POST' });
+		if (res.ok) goto('/login');
+		deleting = false;
+	}
+
+	async function eraseAccount() {
+		if (!confirm('Vai anonimizar sua conta. Seus dados pessoais serão removidos.')) return;
+		erasing = true;
+		await fetch('/api/account/erase', { method: 'POST' });
+		erasing = false;
+	}
 </script>
 
 <svelte:head>
@@ -74,6 +92,21 @@
 					</span>
 				</div>
 			</div>
+		</CardContent>
+	</Card>
+
+	<Card class="border-destructive/50">
+		<CardHeader>
+			<CardTitle class="text-destructive">Zona de perigo</CardTitle>
+			<CardDescription>Ações irreversíveis sobre sua conta.</CardDescription>
+		</CardHeader>
+		<CardContent class="flex flex-col gap-3">
+			<Button variant="outline" onclick={eraseAccount} disabled={erasing}>
+				{erasing ? 'Anonimizando...' : 'Anonimizar dados'}
+			</Button>
+			<Button variant="destructive" onclick={deleteAccount} disabled={deleting}>
+				{deleting ? 'Excluindo...' : 'Excluir conta'}
+			</Button>
 		</CardContent>
 	</Card>
 </div>

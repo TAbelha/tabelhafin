@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "TabelhaFin",
+  "description": "Conecta Meu Pluggy ao TabelhaFin",
+  "version": "1.0.0",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://meu.pluggy.ai/*",
+    "https://my-api.pluggy.ai/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "TabelhaFin"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://meu.pluggy.ai/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

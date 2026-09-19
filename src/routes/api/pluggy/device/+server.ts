@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ locals, platform }) => {
   if (!locals.userId) return unauthorizedJson();
 
   const deviceToken = await issueDeviceToken(
-    platform!.env.SESSIONS,
+    platform!.env.DEVICE_TOKENS,
     locals.userId,
   );
   return json({ deviceToken });
@@ -23,7 +23,7 @@ export const DELETE: RequestHandler = async ({ locals, platform }) => {
   if (!locals.userId) return unauthorizedJson();
 
   const revoked = await revokeDeviceToken(
-    platform!.env.SESSIONS,
+    platform!.env.DEVICE_TOKENS,
     locals.userId,
   );
   return json({ revoked });
@@ -32,6 +32,6 @@ export const DELETE: RequestHandler = async ({ locals, platform }) => {
 export const GET: RequestHandler = async ({ locals, platform }) => {
   if (!locals.userId) return unauthorizedJson();
 
-  const paired = await hasDeviceToken(platform!.env.SESSIONS, locals.userId);
+  const paired = await hasDeviceToken(platform!.env.DEVICE_TOKENS, locals.userId);
   return json({ paired });
 };

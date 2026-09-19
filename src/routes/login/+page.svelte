@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
@@ -31,12 +32,13 @@
 						if (result.type === 'failure') {
 							error = 'Email ou senha inválidos.';
 						} else if (result.type === 'redirect') {
-							window.location.href = '/dashboard';
+							goto('/dashboard');
 						}
 					};
 				}}
 				class="flex flex-col gap-4"
 			>
+				<input type="hidden" name="callbackURL" value="/dashboard" />
 				{#if error}
 					<p class="text-sm text-red-600">{error}</p>
 				{/if}

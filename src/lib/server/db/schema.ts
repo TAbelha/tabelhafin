@@ -59,7 +59,7 @@ export const sessions = sqliteTable("session", {
     .$defaultFn(() => new Date()),
 });
 
-export const authAccounts = sqliteTable("accounts", {
+export const authAccount = sqliteTable("account", {
   id: text("id").primaryKey(),
   userId: text("userId")
     .notNull()
@@ -67,6 +67,19 @@ export const authAccounts = sqliteTable("accounts", {
   accountId: text("accountId").notNull(),
   providerId: text("providerId").notNull(),
   password: text("password"),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
+export const verification = sqliteTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
