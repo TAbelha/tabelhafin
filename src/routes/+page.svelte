@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { Button } from '$lib/components/ui/button';
-
-	let { data } = $props();
 </script>
 
 <svelte:head>
@@ -14,7 +12,8 @@
 		<h1 class="text-4xl font-bold">TabelhaFin</h1>
 		<p class="text-muted-foreground">Controle financeiro pessoal com IA.</p>
 		<div class="flex gap-2 justify-center">
-			<Button href={resolve('/dashboard')}>Entrar</Button>
+			<Button href={resolve('/login')}>Entrar</Button>
+			<Button href={resolve('/signup')} variant="outline">Criar conta</Button>
 		</div>
 	</div>
 </div>
