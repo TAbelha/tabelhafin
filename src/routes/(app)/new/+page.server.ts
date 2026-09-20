@@ -38,6 +38,7 @@ export const actions: Actions = {
 
     const [year, month, day] = dateRaw.split("-").map(Number);
     const date = new Date(Date.UTC(year, month - 1, day));
+    if (!Number.isFinite(date.getTime())) return fail(400, { error: "Data inválida." });
 
     const db = getDb(platform!.env.DB);
     await insertManualTransaction(db, {

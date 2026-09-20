@@ -1,4 +1,5 @@
 import { requireAuth } from "$lib/server/api-auth";
+import { errorJson } from "$lib/server/api-helpers";
 import { getDb } from "$lib/server/db";
 import { financeAccounts, transactions } from "$lib/server/db/schema";
 import { exportUserData } from "$lib/server/db/user-data";
@@ -17,11 +18,13 @@ interface ExportRequest {
 export const POST: RequestHandler = async ({ locals, platform, request }) => {
   requireAuth(locals.userId);
 
-  const body = (await request.json()) as ExportRequest;
+  const body = (await request.json().catch(() => null)) as ExportRequest | null;
+  if (!body) return errorJson("Body inválido.");
+
   const { format, tables } = body;
 
   if (!format || !Array.isArray(tables) || tables.length === 0) {
-    return json({ error: "Parâmetros inválidos." }, { status: 400 });
+    return errorJson("Parâmetros inválidos.");
   }
 
   const db = getDb(platform!.env.DB);

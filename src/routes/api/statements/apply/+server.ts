@@ -9,6 +9,8 @@ import {
 
 import { json } from "@sveltejs/kit";
 
+import { errorJson } from "$lib/server/api-helpers";
+
 import type { RequestHandler } from "./$types";
 
 interface ApplyPayload {
@@ -35,6 +37,9 @@ export const POST: RequestHandler = async ({ request, locals, platform }) => {
   for (const tx of body.transactions) {
     const [year, month, day] = tx.date.split("-").map(Number);
     const date = new Date(Date.UTC(year, month - 1, day));
+    if (!Number.isFinite(date.getTime())) {
+      return errorJson("Data inválida.");
+    }
 
     await insertManualTransaction(db, {
       userId: locals.userId!,

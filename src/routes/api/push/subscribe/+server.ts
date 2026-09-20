@@ -23,7 +23,7 @@ function isSubscribePayload(value: unknown): value is SubscribePayload {
 
 export const POST: RequestHandler = async ({ request, locals, platform }) => {
   requireAuth(locals.userId);
-  const payload = await request.json();
+  const payload = await request.json().catch(() => null);
   if (!isSubscribePayload(payload)) error(400, "Inscrição inválida.");
 
   const db = getDb(platform!.env.DB);
@@ -34,5 +34,5 @@ export const POST: RequestHandler = async ({ request, locals, platform }) => {
     auth: payload.keys.auth,
   });
 
-  return json({ success: true });
+  return json({ ok: true });
 };
