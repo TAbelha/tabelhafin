@@ -1,9 +1,8 @@
 import { and, desc, eq } from "drizzle-orm";
 
-import type { getDb } from "./index";
+import type { getDb, Db } from "./index";
 import { monthlyReports } from "./schema";
 
-type Db = ReturnType<typeof getDb>;
 
 export interface NewMonthlyReportInput {
   userId: string;

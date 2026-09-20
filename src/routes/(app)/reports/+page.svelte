@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '$lib/components/ui/card';
+	import EmptyState from '$lib/components/empty-state.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { formatCurrency } from '$lib/utils/format';
 	import { onMount } from 'svelte';
@@ -111,7 +112,7 @@ ${summary.narrative ?? 'Relatório financeiro do mês.'}
 
 {#if loading}
 	<Card>
-		<CardContent class="py-12 text-center text-muted-foreground">Carregando...</CardContent>
+		<EmptyState>Carregando...</EmptyState>
 	</Card>
 {:else if report}
 	<Card>
@@ -141,8 +142,8 @@ ${summary.narrative ?? 'Relatório financeiro do mês.'}
 	</Card>
 {:else}
 	<Card>
-		<CardContent class="py-12 text-center text-muted-foreground">
+		<EmptyState>
 			Nenhum relatório disponível ainda. Relatórios são gerados no dia 1 de cada mês.
-		</CardContent>
+		</EmptyState>
 	</Card>
 {/if}

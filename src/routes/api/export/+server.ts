@@ -15,7 +15,7 @@ interface ExportRequest {
 }
 
 export const POST: RequestHandler = async ({ locals, platform, request }) => {
-  if (!locals.userId) requireAuth(locals.userId);
+  requireAuth(locals.userId);
 
   const body = (await request.json()) as ExportRequest;
   const { format, tables } = body;

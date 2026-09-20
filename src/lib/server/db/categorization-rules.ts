@@ -1,9 +1,8 @@
 import { and, eq } from "drizzle-orm";
 
-import type { getDb } from "./index";
+import type { getDb, Db } from "./index";
 import { categorizationRules } from "./schema";
 
-type Db = ReturnType<typeof getDb>;
 
 export interface CategorizationRule {
   id: string;

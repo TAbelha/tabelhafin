@@ -1,11 +1,10 @@
 import { AccountType } from "$lib/enums/account-type";
 import { and, eq, gte, inArray, isNull, lt } from "drizzle-orm";
 
-import type { getDb } from "./index";
+import type { getDb, Db } from "./index";
 import { financeAccounts, tags, transactionTags, transactions } from "./schema";
 import { classifyMovement, isNotInternalTransfer } from "./transactions";
 
-type Db = ReturnType<typeof getDb>;
 
 export interface Tag {
   id: string;

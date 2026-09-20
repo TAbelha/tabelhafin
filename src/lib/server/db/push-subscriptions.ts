@@ -1,9 +1,8 @@
 import { eq } from "drizzle-orm";
 
-import type { getDb } from "./index";
+import type { getDb, Db } from "./index";
 import { pushSubscriptions } from "./schema";
 
-type Db = ReturnType<typeof getDb>;
 
 export interface PushSubscriptionInput {
   userId: string;

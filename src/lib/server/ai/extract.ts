@@ -1,4 +1,5 @@
 import { fetchWithRetry } from "$lib/server/http";
+import { getProviderUrl, getProviderHeaders } from "$lib/server/ai/providers";
 import type { AiProvider } from "$lib/utils/ai-providers";
 import { toCents } from "$lib/utils/money";
 
@@ -92,13 +93,9 @@ export async function extractTransactionsFromPdf(
 async function extractWithAnthropic(
   input: ExtractInput,
 ): Promise<ExtractedTransaction[]> {
-  const res = await fetchWithRetry("https://api.anthropic.com/v1/messages", {
+  const res = await fetchWithRetry(getProviderUrl("anthropic"), {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-api-key": input.apiKey,
-      "anthropic-version": "2023-06-01",
-    },
+    headers: getProviderHeaders("anthropic", input.apiKey),
     body: JSON.stringify({
       model: input.model,
       max_tokens: MAX_OUTPUT_TOKENS,

@@ -22,7 +22,7 @@ interface ApplyPayload {
 }
 
 export const POST: RequestHandler = async ({ request, locals, platform }) => {
-  if (!locals.userId) requireAuth(locals.userId);
+  requireAuth(locals.userId);
 
   const body = (await request.json().catch(() => null)) as ApplyPayload | null;
   if (!body?.reviewId || !Array.isArray(body.transactions)) {

@@ -1,5 +1,6 @@
 import { DEFAULT_REPORT_INSTRUCTION } from "$lib/prompts";
 import { fetchWithRetry } from "$lib/server/http";
+import { getProviderUrl, getProviderHeaders, type AiProviderType } from "$lib/server/ai/providers";
 import type { AiProvider } from "$lib/utils/ai-providers";
 import { toReais } from "$lib/utils/money";
 
@@ -74,19 +75,8 @@ export async function generateMonthlySummary(
   input: MonthlyReportInput,
 ): Promise<string> {
   if (input.provider === "anthropic") return generateWithAnthropic(input);
-  if (input.provider === "openai") {
-    return generateWithOpenAiCompatible(
-      input,
-      "https://api.openai.com/v1/chat/completions",
-      "OpenAI API error",
-    );
-  }
-  if (input.provider === "deepseek") {
-    return generateWithOpenAiCompatible(
-      input,
-      "https://api.deepseek.com/chat/completions",
-      "DeepSeek API error",
-    );
+  if (input.provider === "openai" || input.provider === "deepseek") {
+    return generateWithOpenAiCompatible(input, input.provider);
   }
   throw new Error(`Provider de IA não suportado: ${input.provider}`);
 }
@@ -94,13 +84,9 @@ export async function generateMonthlySummary(
 async function generateWithAnthropic(
   input: MonthlyReportInput,
 ): Promise<string> {
-  const res = await fetchWithRetry("https://api.anthropic.com/v1/messages", {
+  const res = await fetchWithRetry(getProviderUrl("anthropic"), {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-api-key": input.apiKey,
-      "anthropic-version": "2023-06-01",
-    },
+    headers: getProviderHeaders("anthropic", input.apiKey),
     body: JSON.stringify({
       model: input.model,
       max_tokens: 512,
@@ -120,22 +106,18 @@ async function generateWithAnthropic(
 
 async function generateWithOpenAiCompatible(
   input: MonthlyReportInput,
-  apiUrl: string,
-  errorLabel: string,
+  provider: AiProviderType,
 ): Promise<string> {
-  const res = await fetchWithRetry(apiUrl, {
+  const res = await fetchWithRetry(getProviderUrl(provider), {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${input.apiKey}`,
-    },
+    headers: getProviderHeaders(provider, input.apiKey),
     body: JSON.stringify({
       model: input.model,
       messages: [{ role: "user", content: buildPrompt(input) }],
     }),
   });
   if (!res.ok)
-    throw new Error(`${errorLabel}: ${res.status} ${await res.text()}`);
+    throw new Error(`Provider error: ${res.status} ${await res.text()}`);
 
   const data = (await res.json()) as {
     choices: Array<{ message: { content?: string } }>;

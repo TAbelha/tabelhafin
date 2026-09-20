@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import EmptyState from '$lib/components/empty-state.svelte';
 	import { formatCurrency } from '$lib/utils/format';
 
 	let { data } = $props();
@@ -41,9 +42,9 @@
 <div class="flex flex-col gap-2">
 	{#if data.tags.length === 0}
 		<Card>
-			<CardContent class="py-12 text-center text-muted-foreground">
-				Nenhuma tag ainda.
-			</CardContent>
+		<EmptyState>
+			Nenhuma tag ainda.
+		</EmptyState>
 		</Card>
 	{:else}
 		{#each data.tags as tag (tag.tagId)}

@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import EmptyState from '$lib/components/empty-state.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as Select from '$lib/components/ui/select';
@@ -89,9 +90,9 @@
 
 {#if groups.length === 0}
 	<Card>
-		<CardContent class="py-12 text-center text-muted-foreground">
+		<EmptyState>
 			Nenhuma recorrência ativa.
-		</CardContent>
+		</EmptyState>
 	</Card>
 {:else}
 	{#each groups as group}

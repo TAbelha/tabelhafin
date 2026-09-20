@@ -1,9 +1,8 @@
 import { eq } from "drizzle-orm";
 
-import type { getDb } from "./index";
+import type { getDb, Db } from "./index";
 import { aiCredentials } from "./schema";
 
-type Db = ReturnType<typeof getDb>;
 
 export interface AiCredentialsInput {
   userId: string;

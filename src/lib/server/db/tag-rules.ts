@@ -1,10 +1,9 @@
 import { and, eq, isNull } from "drizzle-orm";
 
-import type { getDb } from "./index";
+import type { getDb, Db } from "./index";
 import { tagRules, transactionTags, transactions } from "./schema";
 import { getOrCreateTag } from "./tags";
 
-type Db = ReturnType<typeof getDb>;
 
 export interface TagRule {
   id: string;

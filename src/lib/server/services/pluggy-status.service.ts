@@ -1,8 +1,7 @@
 import { PluggyStatus } from "$lib/enums/pluggy-status";
-import type { getDb } from "$lib/server/db";
+import type { getDb, Db } from "$lib/server/db";
 import { getPluggyCredentials } from "$lib/server/db/pluggy-credentials";
 
-type Db = ReturnType<typeof getDb>;
 
 export async function getPluggyStatus(
   db: Db,

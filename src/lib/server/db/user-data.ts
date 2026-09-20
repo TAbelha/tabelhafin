@@ -1,6 +1,6 @@
 import { eq, inArray } from "drizzle-orm";
 
-import type { getDb } from "./index";
+import type { getDb, Db } from "./index";
 import {
   categorizationRules,
   chatConversations,
@@ -17,7 +17,6 @@ import {
   users,
 } from "./schema";
 
-type Db = ReturnType<typeof getDb>;
 
 export async function exportUserData(db: Db, userId: string) {
   const [

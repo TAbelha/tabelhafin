@@ -21,7 +21,7 @@ interface ChatPayload {
 }
 
 export const POST: RequestHandler = async ({ request, locals, platform }) => {
-  if (!locals.userId) requireAuth(locals.userId);
+  requireAuth(locals.userId);
 
   const body = (await request.json().catch(() => null)) as ChatPayload | null;
   const messages = body?.messages;

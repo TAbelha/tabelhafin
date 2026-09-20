@@ -18,10 +18,9 @@ import {
   sql,
 } from "drizzle-orm";
 
-import type { getDb } from "./index";
+import type { getDb, Db } from "./index";
 import { transactions } from "./schema";
 
-type Db = ReturnType<typeof getDb>;
 
 export const isNotInternalTransfer = and(
   or(

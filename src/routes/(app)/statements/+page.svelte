@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Card, CardContent } from '$lib/components/ui/card';
+	import EmptyState from '$lib/components/empty-state.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 
 	let { data } = $props();
@@ -34,9 +35,9 @@
 
 {#if data.reviews.length === 0}
 	<Card>
-		<CardContent class="py-12 text-center text-muted-foreground">
+		<EmptyState>
 			Nenhum extrato importado ainda.
-		</CardContent>
+		</EmptyState>
 	</Card>
 {:else}
 	<div class="flex flex-col gap-3">

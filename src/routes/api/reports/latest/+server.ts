@@ -7,7 +7,7 @@ import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ locals, platform }) => {
-  if (!locals.userId) requireAuth(locals.userId);
+  requireAuth(locals.userId);
 
   const db = getDb(platform!.env.DB);
   const report = await getLatestMonthlyReport(db, locals.userId);

@@ -11,7 +11,7 @@ import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ request, locals, platform }) => {
-  if (!locals.userId) requireAuth(locals.userId);
+  requireAuth(locals.userId);
 
   const formData = await request.formData();
   const file = formData.get("file") as File | null;

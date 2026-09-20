@@ -1,9 +1,6 @@
-import { encryptSecret } from "$lib/server/crypto";
 import { getDb } from "$lib/server/db";
-import { upsertPluggyCredentials } from "$lib/server/db/pluggy-credentials";
-import { fetchItems, jwtExpiresAt } from "$lib/server/pluggy/client";
 import { DEVICE_TOKEN_KV_PREFIX } from "$lib/server/pluggy/device-token";
-import { syncUserItems } from "$lib/server/pluggy/sync";
+import { savePluggyToken } from "$lib/server/pluggy/save-token";
 
 import { json } from "@sveltejs/kit";
 
@@ -30,9 +27,9 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 
   const db = getDb(platform!.env.DB);
 
-  let items;
+  let result;
   try {
-    items = await fetchItems(token);
+    result = await savePluggyToken(db, platform!.env.MASTER_KEY, userId, token);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     if (/401|Unauthorized/.test(msg)) {
@@ -47,31 +44,5 @@ export const POST: RequestHandler = async ({ request, platform }) => {
     );
   }
 
-  const expiresAt = jwtExpiresAt(token);
-  const { ciphertext, nonce } = await encryptSecret(
-    platform!.env.MASTER_KEY,
-    token,
-    {
-      purpose: "pluggy_credentials",
-      userId,
-    },
-  );
-
-  await upsertPluggyCredentials(db, {
-    userId,
-    tokenEncrypted: ciphertext,
-    tokenNonce: nonce,
-    tokenExpiresAt: expiresAt ? new Date(expiresAt) : null,
-  });
-
-  platform!.context.waitUntil(
-    syncUserItems(db, platform!.env.MASTER_KEY, userId).catch((err) => {
-      console.error("[pluggy/token] sync after token push failed", {
-        userId,
-        error: err instanceof Error ? err.message : String(err),
-      });
-    }),
-  );
-
-  return json({ success: true, itemCount: items.length });
+  return json({ ok: true, itemCount: result.itemCount });
 };

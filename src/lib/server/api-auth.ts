@@ -8,10 +8,3 @@ export function requireAuth(
     });
   }
 }
-
-export function unauthorizedJson() {
-  return new Response(JSON.stringify({ error: "Não autenticado." }), {
-    status: 401,
-    headers: { "content-type": "application/json" },
-  });
-}

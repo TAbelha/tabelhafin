@@ -4,7 +4,7 @@ import {
   generateMonthlySummary,
 } from "$lib/server/ai/report";
 import { decryptSecret } from "$lib/server/crypto";
-import { getDb } from "$lib/server/db";
+import { getDb, type Db } from "$lib/server/db";
 import { getAccountsByUser } from "$lib/server/db/accounts";
 import { getAiCredentials } from "$lib/server/db/ai-credentials";
 import {
@@ -19,7 +19,6 @@ import {
 import { getAllUsers } from "$lib/server/db/users";
 import type { AiProvider } from "$lib/utils/ai-providers";
 
-type Db = ReturnType<typeof getDb>;
 
 interface MonthRange {
   yearMonth: string;

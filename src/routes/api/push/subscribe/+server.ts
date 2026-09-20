@@ -22,7 +22,7 @@ function isSubscribePayload(value: unknown): value is SubscribePayload {
 }
 
 export const POST: RequestHandler = async ({ request, locals, platform }) => {
-  if (!locals.userId) requireAuth(locals.userId);
+  requireAuth(locals.userId);
   const payload = await request.json();
   if (!isSubscribePayload(payload)) error(400, "Inscrição inválida.");
 

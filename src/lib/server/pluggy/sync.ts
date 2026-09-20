@@ -2,7 +2,7 @@ import { AccountType } from "$lib/enums/account-type";
 import { categorizeTransactions } from "$lib/server/ai/categorize";
 import { categorizeByRules } from "$lib/server/ai/rules";
 import { decryptSecret } from "$lib/server/crypto";
-import { getDb } from "$lib/server/db";
+import { getDb, type Db } from "$lib/server/db";
 import { upsertAccount } from "$lib/server/db/accounts";
 import { getAiCredentials } from "$lib/server/db/ai-credentials";
 import { getRulesByUser } from "$lib/server/db/categorization-rules";
@@ -44,7 +44,6 @@ import {
   isSelfTransferByDescription,
 } from "./internal-transfers";
 
-type Db = ReturnType<typeof getDb>;
 type PluggyItemRow = Awaited<ReturnType<typeof getAllPluggyItems>>[number];
 
 export async function syncAllUsers(env: Env): Promise<void> {

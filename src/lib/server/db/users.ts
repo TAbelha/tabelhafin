@@ -1,9 +1,8 @@
 import { eq } from "drizzle-orm";
 
-import type { getDb } from "./index";
+import type { getDb, Db } from "./index";
 import { users } from "./schema";
 
-type Db = ReturnType<typeof getDb>;
 
 export async function findUserById(db: Db, id: string) {
   const [user] = await db.select().from(users).where(eq(users.id, id));

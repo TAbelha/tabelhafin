@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent } from '$lib/components/ui/card';
+	import EmptyState from '$lib/components/empty-state.svelte';
 	import { formatCurrency } from '$lib/utils/format';
 
 	let { data } = $props();
@@ -18,9 +19,9 @@
 
 {#if data.transactions.length === 0}
 	<Card>
-		<CardContent class="py-12 text-center text-muted-foreground">
+		<EmptyState>
 			Nenhuma transação encontrada.
-		</CardContent>
+		</EmptyState>
 	</Card>
 {:else}
 	<div class="flex flex-col gap-2">

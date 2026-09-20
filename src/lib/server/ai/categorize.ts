@@ -1,5 +1,6 @@
 import { DEFAULT_CATEGORIZATION_PROMPT } from "$lib/prompts";
 import { fetchWithRetry } from "$lib/server/http";
+import { getProviderUrl, getProviderHeaders, type AiProviderType } from "$lib/server/ai/providers";
 import type { AiProvider } from "$lib/utils/ai-providers";
 import { toReais } from "$lib/utils/money";
 
@@ -145,13 +146,9 @@ function categorizeBatch(
 async function categorizeWithAnthropic(
   input: CategorizeInput,
 ): Promise<CategorizedTransaction[]> {
-  const res = await fetchWithRetry("https://api.anthropic.com/v1/messages", {
+  const res = await fetchWithRetry(getProviderUrl("anthropic"), {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-api-key": input.apiKey,
-      "anthropic-version": "2023-06-01",
-    },
+    headers: getProviderHeaders("anthropic", input.apiKey),
     body: JSON.stringify({
       model: input.model,
       max_tokens: maxTokensForBatch(input.transactions.length),
@@ -195,15 +192,11 @@ async function categorizeWithAnthropic(
 
 async function categorizeWithOpenAiCompatible(
   input: CategorizeInput,
-  apiUrl: string,
-  errorLabel: string,
+  provider: AiProviderType,
 ): Promise<CategorizedTransaction[]> {
-  const res = await fetchWithRetry(apiUrl, {
+  const res = await fetchWithRetry(getProviderUrl(provider), {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${input.apiKey}`,
-    },
+    headers: getProviderHeaders(provider, input.apiKey),
     body: JSON.stringify({
       model: input.model,
       messages: [
@@ -231,7 +224,7 @@ async function categorizeWithOpenAiCompatible(
     }),
   });
   if (!res.ok)
-    throw new Error(`${errorLabel}: ${res.status} ${await res.text()}`);
+    throw new Error(`Provider error: ${res.status} ${await res.text()}`);
 
   const data = (await res.json()) as {
     choices: Array<{
@@ -257,21 +250,13 @@ async function categorizeWithOpenAiCompatible(
 async function categorizeWithOpenAI(
   input: CategorizeInput,
 ): Promise<CategorizedTransaction[]> {
-  return categorizeWithOpenAiCompatible(
-    input,
-    "https://api.openai.com/v1/chat/completions",
-    "OpenAI API error",
-  );
+  return categorizeWithOpenAiCompatible(input, "openai");
 }
 
 async function categorizeWithDeepSeek(
   input: CategorizeInput,
 ): Promise<CategorizedTransaction[]> {
-  return categorizeWithOpenAiCompatible(
-    input,
-    "https://api.deepseek.com/chat/completions",
-    "DeepSeek API error",
-  );
+  return categorizeWithOpenAiCompatible(input, "deepseek");
 }
 
 function toResults(

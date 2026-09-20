@@ -6,3 +6,4 @@ export function getDb(db: D1Database) {
 }
 
 export type DB = ReturnType<typeof getDb>;
+export type { DB as Db };

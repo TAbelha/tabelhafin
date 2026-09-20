@@ -1,4 +1,4 @@
-import { unauthorizedJson } from "$lib/server/api-auth";
+import { requireAuth } from "$lib/server/api-auth";
 import { getDb } from "$lib/server/db";
 import { getPluggyStatus } from "$lib/server/services/pluggy-status.service";
 
@@ -7,7 +7,7 @@ import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ locals, platform }) => {
-  if (!locals.userId) return unauthorizedJson();
+  requireAuth(locals.userId);
 
   const db = getDb(platform!.env.DB);
   const pluggyStatus = await getPluggyStatus(db, locals.userId);

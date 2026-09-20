@@ -1,10 +1,9 @@
 import { Frequency } from "$lib/enums/frequency";
 import { and, eq } from "drizzle-orm";
 
-import type { getDb } from "./index";
+import type { getDb, Db } from "./index";
 import { recurringExpenses } from "./schema";
 
-type Db = ReturnType<typeof getDb>;
 
 export interface RecurringExpenseInput {
   description: string;
