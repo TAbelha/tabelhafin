@@ -1,8 +1,7 @@
 import { eq } from "drizzle-orm";
 
-import type { getDb, Db } from "./index";
+import type { Db } from "./index";
 import { aiCredentials } from "./schema";
-
 
 export interface AiCredentialsInput {
   userId: string;

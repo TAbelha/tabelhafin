@@ -1,8 +1,7 @@
 import { and, desc, eq } from "drizzle-orm";
 
-import type { getDb, Db } from "./index";
+import type { Db } from "./index";
 import { chatConversations, chatMessages } from "./schema";
-
 
 export async function getConversations(db: Db, userId: string) {
   return db

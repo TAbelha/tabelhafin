@@ -17,8 +17,16 @@ describe("computeDedupeHash", () => {
   });
 
   it("produces different hash for different dates", () => {
-    const h1 = computeDedupeHash("acc1", -5000, new Date("2025-01-15T12:00:00Z"));
-    const h2 = computeDedupeHash("acc1", -5000, new Date("2025-01-16T12:00:00Z"));
+    const h1 = computeDedupeHash(
+      "acc1",
+      -5000,
+      new Date("2025-01-15T12:00:00Z"),
+    );
+    const h2 = computeDedupeHash(
+      "acc1",
+      -5000,
+      new Date("2025-01-16T12:00:00Z"),
+    );
     expect(h1).not.toBe(h2);
   });
 

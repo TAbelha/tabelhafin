@@ -35,7 +35,8 @@ $("#pairBtn").addEventListener("click", () => {
     $("#pairBtn").textContent = "Parear";
     if (res?.success) {
       $("#result").className = "result ok";
-      $("#result").textContent = `Pareado! ${res.itemCount} contas encontradas.`;
+      $("#result").textContent =
+        `Pareado! ${res.itemCount} contas encontradas.`;
       updateStatus({ paired: true, pluggyToken: true });
     } else {
       $("#result").className = "result err";

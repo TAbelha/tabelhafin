@@ -1,8 +1,7 @@
 import { and, eq, notLike } from "drizzle-orm";
 
-import type { getDb, Db } from "./index";
+import type { Db } from "./index";
 import { pluggyItems } from "./schema";
-
 
 export interface PluggyItemInput {
   userId: string;

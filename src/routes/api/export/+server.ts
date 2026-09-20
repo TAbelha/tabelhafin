@@ -1,12 +1,9 @@
 import { requireAuth } from "$lib/server/api-auth";
 import { errorJson } from "$lib/server/api-helpers";
 import { getDb } from "$lib/server/db";
-import { financeAccounts, transactions } from "$lib/server/db/schema";
 import { exportUserData } from "$lib/server/db/user-data";
 
 import { json } from "@sveltejs/kit";
-
-import { eq } from "drizzle-orm";
 
 import type { RequestHandler } from "./$types";
 

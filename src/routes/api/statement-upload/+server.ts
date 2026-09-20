@@ -4,7 +4,6 @@ import { getDb } from "$lib/server/db";
 import {
   createStatementReview,
   type StatementSource,
-  StatementReviewStatus,
 } from "$lib/server/db/statement-reviews";
 
 import { json } from "@sveltejs/kit";

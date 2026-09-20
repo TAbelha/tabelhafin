@@ -32,6 +32,9 @@ export const DELETE: RequestHandler = async ({ locals, platform }) => {
 export const GET: RequestHandler = async ({ locals, platform }) => {
   requireAuth(locals.userId);
 
-  const paired = await hasDeviceToken(platform!.env.DEVICE_TOKENS, locals.userId);
+  const paired = await hasDeviceToken(
+    platform!.env.DEVICE_TOKENS,
+    locals.userId,
+  );
   return json({ paired });
 };

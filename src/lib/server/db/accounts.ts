@@ -1,9 +1,8 @@
 import { AccountType } from "$lib/enums/account-type";
 import { and, eq } from "drizzle-orm";
 
-import type { getDb, Db } from "./index";
+import type { Db } from "./index";
 import { financeAccounts as accounts, pluggyItems } from "./schema";
-
 
 export interface AccountInput {
   userId: string;

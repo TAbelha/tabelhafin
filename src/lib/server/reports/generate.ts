@@ -19,7 +19,6 @@ import {
 import { getAllUsers } from "$lib/server/db/users";
 import type { AiProvider } from "$lib/utils/ai-providers";
 
-
 interface MonthRange {
   yearMonth: string;
   from: Date;

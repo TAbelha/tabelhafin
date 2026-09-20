@@ -17,7 +17,6 @@ import {
   users,
 } from "./schema";
 
-
 export async function exportUserData(db: Db, userId: string) {
   const [
     user,

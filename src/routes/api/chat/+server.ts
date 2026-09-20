@@ -68,8 +68,7 @@ export const POST: RequestHandler = async ({ request, locals, platform }) => {
           })),
         }),
       });
-      if (!res.ok)
-        return errorJson(`Erro na IA: ${res.status}`, 502);
+      if (!res.ok) return errorJson(`Erro na IA: ${res.status}`, 502);
       const data = (await res.json()) as {
         content: Array<{ type: string; text?: string }>;
       };
@@ -88,8 +87,7 @@ export const POST: RequestHandler = async ({ request, locals, platform }) => {
         ],
       }),
     });
-    if (!res.ok)
-      return errorJson(`Erro na IA: ${res.status}`, 502);
+    if (!res.ok) return errorJson(`Erro na IA: ${res.status}`, 502);
     const data = (await res.json()) as {
       choices: Array<{ message: { content?: string } }>;
     };

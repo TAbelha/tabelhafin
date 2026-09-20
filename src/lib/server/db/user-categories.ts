@@ -1,8 +1,7 @@
 import { and, eq } from "drizzle-orm";
 
-import type { getDb, Db } from "./index";
+import type { Db } from "./index";
 import { userCategories } from "./schema";
-
 
 export interface UserCategory {
   userId: string;

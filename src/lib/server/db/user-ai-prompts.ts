@@ -1,8 +1,7 @@
 import { eq } from "drizzle-orm";
 
-import type { getDb, Db } from "./index";
+import type { Db } from "./index";
 import { userAiPrompts } from "./schema";
-
 
 export interface UserAiPrompts {
   categorizationPrompt: string | null;

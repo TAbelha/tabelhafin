@@ -1,11 +1,17 @@
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "PLUGGY_TOKEN") {
-    chrome.storage.local.set({ pluggyToken: msg.token, capturedAt: Date.now() });
+    chrome.storage.local.set({
+      pluggyToken: msg.token,
+      capturedAt: Date.now(),
+    });
   }
   if (msg.type === "GET_STATUS") {
-    chrome.storage.local.get(["pluggyToken", "capturedAt", "paired"], (data) => {
-      sendResponse(data);
-    });
+    chrome.storage.local.get(
+      ["pluggyToken", "capturedAt", "paired"],
+      (data) => {
+        sendResponse(data);
+      },
+    );
     return true;
   }
   if (msg.type === "PAIR") {
@@ -13,7 +19,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     const deviceToken = msg.deviceToken;
     chrome.storage.local.get("pluggyToken", async (data) => {
       if (!data.pluggyToken) {
-        sendResponse({ error: "Nenhum token do Pluggy capturado. Abra meu.pluggy.ai e navegue." });
+        sendResponse({
+          error:
+            "Nenhum token do Pluggy capturado. Abra meu.pluggy.ai e navegue.",
+        });
         return;
       }
       try {

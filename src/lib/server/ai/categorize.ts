@@ -1,6 +1,10 @@
 import { DEFAULT_CATEGORIZATION_PROMPT } from "$lib/prompts";
 import { fetchWithRetry } from "$lib/server/http";
-import { getProviderUrl, getProviderHeaders, type AiProviderType } from "$lib/server/ai/providers";
+import {
+  getProviderUrl,
+  getProviderHeaders,
+  type AiProviderType,
+} from "$lib/server/ai/providers";
 import type { AiProvider } from "$lib/utils/ai-providers";
 import { toReais } from "$lib/utils/money";
 

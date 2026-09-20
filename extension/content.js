@@ -3,7 +3,12 @@
 
   const origFetch = window.fetch;
   window.fetch = async function (input, init) {
-    const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+    const url =
+      typeof input === "string"
+        ? input
+        : input instanceof URL
+          ? input.href
+          : input.url;
     if (url.includes(API_HOST)) {
       const headers = init?.headers;
       let auth = null;
@@ -13,7 +18,10 @@
         auth = headers["Authorization"] ?? headers["authorization"];
       }
       if (auth) {
-        chrome.runtime.sendMessage({ type: "PLUGGY_TOKEN", token: auth.replace(/^Bearer\s+/i, "") });
+        chrome.runtime.sendMessage({
+          type: "PLUGGY_TOKEN",
+          token: auth.replace(/^Bearer\s+/i, ""),
+        });
       }
     }
     return origFetch.apply(this, arguments);
@@ -27,8 +35,14 @@
     return origOpen.apply(this, arguments);
   };
   XMLHttpRequest.prototype.setRequestHeader = function (name, value) {
-    if (this._url?.includes(API_HOST) && name.toLowerCase() === "authorization") {
-      chrome.runtime.sendMessage({ type: "PLUGGY_TOKEN", token: value.replace(/^Bearer\s+/i, "") });
+    if (
+      this._url?.includes(API_HOST) &&
+      name.toLowerCase() === "authorization"
+    ) {
+      chrome.runtime.sendMessage({
+        type: "PLUGGY_TOKEN",
+        token: value.replace(/^Bearer\s+/i, ""),
+      });
     }
     this._headers[name] = value;
     return origSetHeader.apply(this, arguments);

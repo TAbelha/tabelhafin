@@ -1,9 +1,6 @@
 import { json, type RequestEvent } from "@sveltejs/kit";
 
-export function cronHandler(
-  fn: (env: Env) => Promise<void>,
-  label: string,
-) {
+export function cronHandler(fn: (env: Env) => Promise<void>, label: string) {
   return async ({ request, platform }: RequestEvent) => {
     const auth = request.headers.get("authorization");
     if (auth !== `Bearer ${platform!.env.CRON_SECRET}`) {
