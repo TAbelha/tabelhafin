@@ -11,10 +11,6 @@ import {
   getMonthlyReport,
   insertMonthlyReport,
 } from "$lib/server/db/monthly-reports";
-import {
-  deletePushSubscriptionById,
-  findPushSubscriptionsByUserId,
-} from "$lib/server/db/push-subscriptions";
 import { getTagTotals } from "$lib/server/db/tags";
 import {
   getTransactionsInRange,
@@ -165,55 +161,4 @@ async function generateReportForUser(
     summaryJson: JSON.stringify(summary),
     modelUsed: aiCredentialsRow.model,
   });
-}
-
-async function sendReportReadyPush(
-  db: Db,
-  env: Env,
-  userId: string,
-  yearMonth: string,
-): Promise<void> {
-  const subscriptions = await findPushSubscriptionsByUserId(db, userId);
-  if (subscriptions.length === 0) return;
-
-  const vapid = {
-    subject: env.VAPID_SUBJECT,
-    publicKey: env.VAPID_PUBLIC_KEY,
-    privateKey: env.VAPID_PRIVATE_KEY,
-  };
-
-  await Promise.all(
-    subscriptions.map(async (sub) => {
-      try {
-        const { buildPushPayload } =
-          await import("@block65/webcrypto-web-push");
-        const payload = await buildPushPayload(
-          {
-            data: {
-              title: "Relatório mensal pronto",
-              body: `Seu relatório de ${yearMonth} já está disponível no TAbelhaFin.`,
-              url: "/dashboard",
-            },
-            options: { ttl: 1800 },
-          },
-          {
-            endpoint: sub.endpoint,
-            expirationTime: null,
-            keys: { p256dh: sub.p256dh, auth: sub.auth },
-          },
-          vapid,
-        );
-        const res = await fetch(sub.endpoint, payload as RequestInit);
-        if (res.status === 404 || res.status === 410) {
-          await deletePushSubscriptionById(db, sub.id);
-        }
-      } catch (err) {
-        console.error("[reports/generate] falha ao enviar push", {
-          userId,
-          subscriptionId: sub.id,
-          error: err instanceof Error ? err.message : String(err),
-        });
-      }
-    }),
-  );
 }

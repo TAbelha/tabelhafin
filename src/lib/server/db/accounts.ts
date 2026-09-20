@@ -17,13 +17,6 @@ export interface AccountInput {
   cachedBalance: number;
 }
 
-export async function getAccountsByItem(db: Db, pluggyItemId: string) {
-  return db
-    .select()
-    .from(accounts)
-    .where(eq(accounts.pluggyItemId, pluggyItemId));
-}
-
 export async function getAccountsByUser(db: Db, userId: string) {
   return db.select().from(accounts).where(eq(accounts.userId, userId));
 }

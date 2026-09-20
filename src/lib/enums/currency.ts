@@ -1,3 +1,1 @@
-export enum Currency {
-  BRL = "BRL",
-}
+export const BRL = "BRL" as const;

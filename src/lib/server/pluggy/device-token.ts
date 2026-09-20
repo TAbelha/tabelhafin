@@ -1,4 +1,4 @@
-export function generateDeviceToken(): string {
+function generateDeviceToken(): string {
   const bytes = new Uint8Array(32);
   crypto.getRandomValues(bytes);
   return btoa(String.fromCharCode(...bytes))

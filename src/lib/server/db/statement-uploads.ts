@@ -5,26 +5,6 @@ import { statementUploads } from "./schema";
 
 type Db = ReturnType<typeof getDb>;
 
-export interface NewStatementUploadInput {
-  userId: string;
-  filename: string;
-}
-
-export async function insertStatementUpload(
-  db: Db,
-  input: NewStatementUploadInput,
-) {
-  const [saved] = await db
-    .insert(statementUploads)
-    .values({
-      userId: input.userId,
-      filename: input.filename,
-      status: "processing",
-    })
-    .returning();
-  return saved;
-}
-
 export async function getCompletedUploadFilenames(
   db: Db,
   userId: string,

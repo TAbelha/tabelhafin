@@ -80,20 +80,6 @@ export async function addCategory(
   return created;
 }
 
-export async function updateCategory(
-  db: Db,
-  userId: string,
-  name: string,
-  patch: { name?: string; color?: string },
-): Promise<void> {
-  await db
-    .update(userCategories)
-    .set({ name: patch.name, color: patch.color })
-    .where(
-      and(eq(userCategories.userId, userId), eq(userCategories.name, name)),
-    );
-}
-
 export async function deleteCategory(
   db: Db,
   userId: string,

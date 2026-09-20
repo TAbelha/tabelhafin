@@ -62,24 +62,6 @@ export async function getGroupedTagRulesByUser(
   );
 }
 
-export async function countTransactionsForDescription(
-  db: Db,
-  userId: string,
-  description: string,
-): Promise<number> {
-  const rows = await db
-    .select({ id: transactions.id })
-    .from(transactions)
-    .where(
-      and(
-        eq(transactions.userId, userId),
-        eq(transactions.description, description),
-        isNull(transactions.supersededByTransactionId),
-      ),
-    );
-  return rows.length;
-}
-
 export async function deleteTagRulesForDescription(
   db: Db,
   userId: string,

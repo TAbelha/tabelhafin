@@ -4,7 +4,6 @@ import {
   INTERNAL_TRANSFER_CATEGORIES,
   INTERNAL_TRANSFER_DESCRIPTIONS,
 } from "$lib/server/pluggy/internal-transfers";
-import type { TransactionCategory } from "$lib/utils/categories";
 
 import {
   and,
@@ -14,7 +13,6 @@ import {
   inArray,
   isNull,
   lte,
-  ne,
   notInArray,
   or,
   sql,
@@ -105,17 +103,6 @@ export interface NewPluggyTransactionInput {
   dedupeHash: string;
 }
 
-export async function getTransactionByPluggyId(
-  db: Db,
-  pluggyTransactionId: string,
-) {
-  const [row] = await db
-    .select()
-    .from(transactions)
-    .where(eq(transactions.pluggyTransactionId, pluggyTransactionId));
-  return row ?? null;
-}
-
 const EXISTING_ID_CHUNK = 200;
 
 export async function getExistingPluggyIds(
@@ -182,46 +169,6 @@ export async function insertPluggyTransaction(
   return saved ?? null;
 }
 
-export interface NewPdfTransactionInput {
-  userId: string;
-  statementUploadId: string;
-  date: Date;
-  description: string;
-  amount: number;
-  currency: string;
-  category: TransactionCategory;
-}
-
-export async function insertPdfTransaction(
-  db: Db,
-  input: NewPdfTransactionInput,
-) {
-  const covering = await findTransactionCoveringPdfRow(
-    db,
-    input.userId,
-    input.amount,
-    input.date,
-  );
-
-  const [saved] = await db
-    .insert(transactions)
-    .values({
-      userId: input.userId,
-      statementUploadId: input.statementUploadId,
-      date: input.date,
-      description: input.description,
-      amount: input.amount,
-      currency: input.currency,
-      source: "pdf_upload",
-      category: input.category,
-      categorySource: "ai",
-      dedupeHash: null,
-      supersededByTransactionId: covering?.id ?? null,
-    })
-    .returning();
-  return { transaction: saved, supersededBy: covering?.id ?? null };
-}
-
 export interface NewManualTransactionInput {
   userId: string;
   accountId?: string | null;
@@ -229,7 +176,7 @@ export interface NewManualTransactionInput {
   description: string;
   amount: number;
   currency: string;
-  category: TransactionCategory | null;
+  category: string | null;
   notes?: string | null;
 }
 
@@ -287,41 +234,6 @@ export async function findSupersedeCandidate(
   return row ?? null;
 }
 
-export function amountsMatchForDedupe(a: number, b: number): boolean {
-  return Math.abs(a) === Math.abs(b);
-}
-
-export function isWithinSupersedeWindow(a: Date, b: Date): boolean {
-  return (
-    Math.abs(a.getTime() - b.getTime()) <= SUPERSEDE_TOLERANCE_DAYS * DAY_MS
-  );
-}
-
-export async function findTransactionCoveringPdfRow(
-  db: Db,
-  userId: string,
-  amount: number,
-  date: Date,
-) {
-  const from = new Date(date.getTime() - SUPERSEDE_TOLERANCE_DAYS * DAY_MS);
-  const to = new Date(date.getTime() + SUPERSEDE_TOLERANCE_DAYS * DAY_MS);
-  const candidates = await db
-    .select()
-    .from(transactions)
-    .where(
-      and(
-        eq(transactions.userId, userId),
-        ne(transactions.source, "pdf_upload"),
-        isNull(transactions.supersededByTransactionId),
-        gte(transactions.date, from),
-        lte(transactions.date, to),
-      ),
-    );
-  return (
-    candidates.find((row) => amountsMatchForDedupe(row.amount, amount)) ?? null
-  );
-}
-
 export async function markSuperseded(
   db: Db,
   oldTransactionId: string,
@@ -331,33 +243,6 @@ export async function markSuperseded(
     .update(transactions)
     .set({ supersededByTransactionId: newTransactionId })
     .where(eq(transactions.id, oldTransactionId));
-}
-
-export async function renameCategoryOnTransactions(
-  db: Db,
-  userId: string,
-  oldName: string,
-  newName: string,
-): Promise<void> {
-  await db
-    .update(transactions)
-    .set({ category: newName })
-    .where(
-      and(eq(transactions.userId, userId), eq(transactions.category, oldName)),
-    );
-}
-
-export async function clearCategoryOnTransactions(
-  db: Db,
-  userId: string,
-  name: string,
-): Promise<void> {
-  await db
-    .update(transactions)
-    .set({ category: null, categorySource: null })
-    .where(
-      and(eq(transactions.userId, userId), eq(transactions.category, name)),
-    );
 }
 
 export async function getUncategorizedTransactions(db: Db, userId: string) {

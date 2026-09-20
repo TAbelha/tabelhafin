@@ -1,3 +1,1 @@
-export enum Category {
-  Uncategorized = "Sem categoria",
-}
+export const UNCATEGORIZED = "Sem categoria" as const;

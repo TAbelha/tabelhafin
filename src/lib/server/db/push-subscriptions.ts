@@ -26,14 +26,3 @@ export async function upsertPushSubscription(
     .returning();
   return saved;
 }
-
-export async function findPushSubscriptionsByUserId(db: Db, userId: string) {
-  return db
-    .select()
-    .from(pushSubscriptions)
-    .where(eq(pushSubscriptions.userId, userId));
-}
-
-export async function deletePushSubscriptionById(db: Db, id: string) {
-  await db.delete(pushSubscriptions).where(eq(pushSubscriptions.id, id));
-}

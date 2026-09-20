@@ -27,14 +27,6 @@ export async function getRecurringExpenses(db: Db, userId: string) {
     .orderBy(recurringExpenses.description);
 }
 
-export async function getAllRecurringExpenses(db: Db, userId: string) {
-  return db
-    .select()
-    .from(recurringExpenses)
-    .where(eq(recurringExpenses.userId, userId))
-    .orderBy(recurringExpenses.description);
-}
-
 export async function getActiveRecurringExpenseByDescription(
   db: Db,
   userId: string,

@@ -3,8 +3,7 @@ import { getAccountsByUser } from "$lib/server/db/accounts";
 import { insertManualTransaction } from "$lib/server/db/transactions";
 import { requireLogin } from "$lib/server/require-login";
 
-import { Category } from "$lib/enums/category";
-import { Currency } from "$lib/enums/currency";
+import { BRL } from "$lib/enums/currency";
 
 import { fail, redirect } from "@sveltejs/kit";
 
@@ -47,8 +46,8 @@ export const actions: Actions = {
       date,
       description,
       amount,
-      currency: Currency.BRL,
-      category: category as Category,
+      currency: BRL,
+      category,
       notes,
     });
 

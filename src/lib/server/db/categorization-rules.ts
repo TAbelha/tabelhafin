@@ -72,21 +72,6 @@ export async function deleteRule(
     );
 }
 
-export async function deleteRuleForDescription(
-  db: Db,
-  userId: string,
-  description: string,
-): Promise<void> {
-  await db
-    .delete(categorizationRules)
-    .where(
-      and(
-        eq(categorizationRules.userId, userId),
-        eq(categorizationRules.description, description),
-      ),
-    );
-}
-
 export async function renameCategoryOnRules(
   db: Db,
   userId: string,
