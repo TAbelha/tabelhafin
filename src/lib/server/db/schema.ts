@@ -59,7 +59,7 @@ export const sessions = sqliteTable("session", {
     .$defaultFn(() => new Date()),
 });
 
-export const authAccount = sqliteTable("account", {
+export const accounts = sqliteTable("account", {
   id: text("id").primaryKey(),
   userId: text("userId")
     .notNull()
@@ -67,6 +67,12 @@ export const authAccount = sqliteTable("account", {
   accountId: text("accountId").notNull(),
   providerId: text("providerId").notNull(),
   password: text("password"),
+  accessToken: text("accessToken"),
+  refreshToken: text("refreshToken"),
+  idToken: text("idToken"),
+  accessTokenExpiresAt: integer("accessTokenExpiresAt", { mode: "timestamp" }),
+  refreshTokenExpiresAt: integer("refreshTokenExpiresAt", { mode: "timestamp" }),
+  scope: text("scope"),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
