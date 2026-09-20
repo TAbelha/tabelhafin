@@ -57,17 +57,22 @@ export async function syncAllUsers(env: Env): Promise<void> {
     itemsByUser.set(item.userId, list);
   }
 
-  for (const userId of itemsByUser.keys()) {
-    try {
-      await syncUserItems(db, env.MASTER_KEY, userId, {
-        items: itemsByUser.get(userId),
-      });
-    } catch (err) {
-      console.error("[pluggy/sync] falha ao sincronizar usuário", {
-        userId,
-        error: err instanceof Error ? err.message : String(err),
-      });
-    }
+  const CONCURRENCY = 5;
+  const userIds = [...itemsByUser.keys()];
+  for (let i = 0; i < userIds.length; i += CONCURRENCY) {
+    const batch = userIds.slice(i, i + CONCURRENCY);
+    await Promise.allSettled(
+      batch.map((userId) =>
+        syncUserItems(db, env.MASTER_KEY, userId, {
+          items: itemsByUser.get(userId),
+        }).catch((err) => {
+          console.error("[pluggy/sync] falha ao sincronizar usuário", {
+            userId,
+            error: err instanceof Error ? err.message : String(err),
+          });
+        }),
+      ),
+    );
   }
 }
 
