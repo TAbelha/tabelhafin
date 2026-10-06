@@ -12,8 +12,6 @@ import { signedBalance, sumSignedBalance } from "$lib/utils/accounts";
 import { parseCents } from "$lib/utils/money";
 
 import { fail } from "@sveltejs/kit";
-import { toast } from "svelte-sonner";
-
 import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals, platform }) => {
@@ -69,7 +67,6 @@ export const actions: Actions = {
       type: type as AccountType,
       balance,
     });
-    toast.success(`Conta "${name}" criada.`);
     return { success: true };
   },
 
@@ -85,7 +82,6 @@ export const actions: Actions = {
 
     const db = getDb(platform!.env.DB);
     await updateAccountBalance(db, locals.userId, accountId, balance);
-    toast.success("Saldo atualizado.");
     return { success: true };
   },
 
@@ -98,7 +94,6 @@ export const actions: Actions = {
 
     const db = getDb(platform!.env.DB);
     await deleteAccount(db, locals.userId, accountId);
-    toast.success("Conta excluída.");
     return { success: true };
   },
 };

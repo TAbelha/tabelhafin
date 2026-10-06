@@ -3,8 +3,8 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import EmptyState from '$lib/components/empty-state.svelte';
+	import { Field, FieldLabel } from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
 	import * as Select from '$lib/components/ui/select';
 	import { Frequency } from '$lib/enums/frequency';
 	import { formatCurrency } from '$lib/utils/format';
@@ -12,6 +12,7 @@
 	let { data } = $props();
 
 	let showForm = $state(false);
+	let error: string | null = $state(null);
 
 	const FREQUENCIES: Record<string, string> = {
 		[Frequency.Weekly]: 'Semanal',
@@ -23,7 +24,7 @@
 	const GROUP_ORDER = [Frequency.Monthly, Frequency.Weekly, Frequency.Quarterly, Frequency.Yearly];
 
 	const groups = $derived.by(() => {
-		const byFreq: Record<string, any[]> = {};
+		const byFreq: Record<string, typeof data.expenses> = {};
 		for (const e of data.expenses) {
 			if (!e.isActive) continue;
 			(byFreq[e.frequency] ??= []).push(e);
@@ -51,20 +52,32 @@
 	<Card class="mb-6">
 		<CardHeader><CardTitle>Nova recorrência</CardTitle></CardHeader>
 		<CardContent>
-			<form method="POST" action="?/create" use:enhance class="flex flex-col gap-3">
+			<form method="POST" action="?/create" use:enhance={() => {
+			error = null;
+			return async ({ result }) => {
+				if (result.type === 'failure') {
+					error = (result.data as { error?: string })?.error ?? 'Erro ao criar recorrência.';
+				} else if (result.type === 'success') {
+					showForm = false;
+				}
+			};
+		}} class="flex flex-col gap-3">
+			{#if error}
+				<p class="text-sm text-destructive">{error}</p>
+			{/if}
 				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-					<div>
-						<Label for="description">Descrição</Label>
+					<Field>
+						<FieldLabel for="description">Descrição</FieldLabel>
 						<Input id="description" name="description" placeholder="Ex: Netflix" required />
-					</div>
-					<div>
-						<Label for="amount">Valor (R$)</Label>
+					</Field>
+					<Field>
+						<FieldLabel for="amount">Valor (R$)</FieldLabel>
 						<Input id="amount" name="amount" placeholder="0,00" required />
-					</div>
+					</Field>
 				</div>
 				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-					<div>
-						<Label>Frequência</Label>
+					<Field>
+						<FieldLabel>Frequência</FieldLabel>
 						<Select.Root type="single" name="frequency" value={Frequency.Monthly}>
 							<Select.Trigger><Select.Value /></Select.Trigger>
 							<Select.Content>
@@ -73,11 +86,11 @@
 								{/each}
 							</Select.Content>
 						</Select.Root>
-					</div>
-					<div>
-						<Label for="nextChargeDate">Próxima cobrança</Label>
+					</Field>
+					<Field>
+						<FieldLabel for="nextChargeDate">Próxima cobrança</FieldLabel>
 						<Input id="nextChargeDate" name="nextChargeDate" type="date" required />
-					</div>
+					</Field>
 				</div>
 				<div class="flex justify-end gap-2">
 					<Button type="button" variant="outline" onclick={() => (showForm = false)}>Cancelar</Button>
@@ -104,12 +117,14 @@
 						<div>
 							<p class="font-medium">{expense.description}</p>
 							<p class="text-xs text-muted-foreground">
-								Próxima: {new Date(expense.nextChargeDate).toLocaleDateString('pt-BR')}
+								{#if expense.nextChargeDate}
+									Próxima: {new Date(expense.nextChargeDate).toLocaleDateString('pt-BR')}
+								{/if}
 							</p>
 						</div>
 						<div class="flex items-center gap-3">
 							<span class="font-mono text-sm text-red-600">{formatCurrency(expense.amount)}</span>
-							<form method="POST" action="?/delete" use:enhance class="inline">
+							<form method="POST" action="?/delete" use:enhance class="inline" onsubmit={(e) => { if (!confirm('Excluir esta recorrência?')) e.preventDefault(); }}>
 								<input type="hidden" name="expenseId" value={expense.id} />
 								<Button type="submit" variant="ghost" size="sm">Excluir</Button>
 							</form>

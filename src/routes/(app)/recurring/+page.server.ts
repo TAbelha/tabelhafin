@@ -4,10 +4,11 @@ import {
   deleteRecurringExpense,
   getRecurringExpenses,
 } from "$lib/server/db/recurring-expenses";
+import { Frequency } from "$lib/enums/frequency";
+import { parseCents } from "$lib/utils/money";
 import { requireLogin } from "$lib/server/require-login";
 
 import { fail } from "@sveltejs/kit";
-import { toast } from "svelte-sonner";
 
 import type { Actions, PageServerLoad } from "./$types";
 
@@ -33,8 +34,8 @@ export const actions: Actions = {
     if (!description) return fail(400, { error: "Descrição obrigatória." });
     if (!amountRaw) return fail(400, { error: "Valor obrigatório." });
 
-    const amount = Math.round(parseFloat(amountRaw) * 100);
-    if (!Number.isFinite(amount))
+    const amount = parseCents(amountRaw);
+    if (amount === null)
       return fail(400, { error: "Valor inválido." });
 
     const [year, month, day] = nextChargeDate.split("-").map(Number);
@@ -46,11 +47,10 @@ export const actions: Actions = {
     await createRecurringExpense(db, locals.userId!, {
       description,
       amount,
-      frequency: frequency as any,
+      frequency: frequency as Frequency,
       nextChargeDate: date,
     });
 
-    toast.success("Recorrência criada.");
     return { success: true };
   },
 
@@ -64,7 +64,6 @@ export const actions: Actions = {
     const db = getDb(platform!.env.DB);
     await deleteRecurringExpense(db, locals.userId, expenseId);
 
-    toast.success("Recorrência excluída.");
     return { success: true };
   },
 };

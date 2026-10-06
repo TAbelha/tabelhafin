@@ -4,8 +4,8 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import EmptyState from '$lib/components/empty-state.svelte';
+	import { Field, FieldLabel } from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
 	import * as Select from '$lib/components/ui/select';
 	import { signedBalance } from '$lib/utils/accounts';
 	import { formatCurrency } from '$lib/utils/format';
@@ -24,7 +24,7 @@
 	};
 
 	const filteredAccounts = $derived(
-		data.accounts.filter((a: any) => {
+		data.accounts.filter((a: { type: string; name: string }) => {
 			if (typeFilter && a.type !== typeFilter) return false;
 			if (searchQuery.trim() && !a.name.toLowerCase().includes(searchQuery.trim().toLowerCase()))
 				return false;
@@ -79,12 +79,12 @@
 		<CardContent>
 			<form method="POST" action="?/create" use:enhance class="flex flex-col gap-3">
 				<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-					<div>
-						<Label for="name">Nome</Label>
+					<Field>
+						<FieldLabel for="name">Nome</FieldLabel>
 						<Input id="name" name="name" placeholder="Ex: Carteira, Banco X" required />
-					</div>
-					<div>
-						<Label for="type">Tipo</Label>
+					</Field>
+					<Field>
+						<FieldLabel for="type">Tipo</FieldLabel>
 						<Select.Root type="single" name="type">
 							<Select.Trigger><Select.Value placeholder="Selecione" /></Select.Trigger>
 							<Select.Content>
@@ -93,11 +93,11 @@
 								<Select.Item value={AccountType.Investment}>Investimentos</Select.Item>
 							</Select.Content>
 						</Select.Root>
-					</div>
-					<div>
-						<Label for="balance">Saldo atual (R$)</Label>
+					</Field>
+					<Field>
+						<FieldLabel for="balance">Saldo atual (R$)</FieldLabel>
 						<Input id="balance" name="balance" placeholder="0,00" required />
-					</div>
+					</Field>
 				</div>
 				<p class="text-xs text-muted-foreground">
 					Em cartão de crédito, informe o valor da fatura em aberto (positivo).
@@ -133,6 +133,7 @@
 		</Card>
 	{:else}
 		{#each filteredAccounts as account (account.id)}
+			{@const balance = signedBalance(account)}
 			<Card>
 				<CardContent class="flex items-center justify-between py-3 px-4">
 					<div class="flex-1 min-w-0">
@@ -142,8 +143,8 @@
 						</p>
 					</div>
 					<div class="flex items-center gap-2">
-						<span class={amountClass(signedBalance(account))}>
-							{formatCurrency(signedBalance(account))}
+						<span class={amountClass(balance)}>
+							{formatCurrency(balance)}
 						</span>
 						{#if account.manual}
 							<form method="POST" action="?/delete" use:enhance class="inline">

@@ -4,7 +4,6 @@ import { users } from "$lib/server/db/schema";
 import { eq } from "drizzle-orm";
 
 import { fail } from "@sveltejs/kit";
-import { toast } from "svelte-sonner";
 
 import type { Actions, PageServerLoad } from "./$types";
 
@@ -41,7 +40,6 @@ export const actions: Actions = {
     const db = getDb(platform!.env.DB);
     await db.update(users).set({ name }).where(eq(users.id, locals.userId));
 
-    toast.success("Nome atualizado.");
     return { success: true };
   },
 };

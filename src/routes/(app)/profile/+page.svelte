@@ -3,8 +3,8 @@
 	import { goto } from '$app/navigation';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '$lib/components/ui/card';
+	import { Field, FieldLabel } from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
 	import { Separator } from '$lib/components/ui/separator';
 
 	let { data } = $props();
@@ -42,14 +42,14 @@
 		</CardHeader>
 		<CardContent>
 			<form method="POST" action="?/updateName" use:enhance class="flex flex-col gap-3">
-				<div>
-					<Label for="name">Nome</Label>
+				<Field>
+					<FieldLabel for="name">Nome</FieldLabel>
 					<Input id="name" name="name" bind:value={name} required />
-				</div>
-				<div>
-					<Label>Email</Label>
+				</Field>
+				<Field>
+					<FieldLabel>Email</FieldLabel>
 					<Input value={data.user?.email ?? ''} disabled />
-				</div>
+				</Field>
 				<Button type="submit" class="w-fit">Salvar</Button>
 			</form>
 		</CardContent>

@@ -1,10 +1,13 @@
 <script lang="ts">
+	import type { PageData } from './$types';
 	import { resolve } from '$app/paths';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { formatCurrency } from '$lib/utils/format';
+	import MonthlyExpensesChart from '$lib/components/charts/monthly-expenses.svelte';
+	import CategoryBreakdownChart from '$lib/components/charts/category-breakdown.svelte';
 
-	let { data } = $props();
+	let { data }: { data: PageData } = $props();
 </script>
 
 <svelte:head>
@@ -51,20 +54,26 @@
 	</Card>
 </div>
 
-{#if data.categoryTotals.length > 0}
-	<Card>
-		<CardHeader>
-			<CardTitle>Top categorias</CardTitle>
-		</CardHeader>
-		<CardContent>
-			<div class="flex flex-col gap-2">
-				{#each data.categoryTotals.slice(0, 8) as cat}
-					<div class="flex items-center justify-between">
-						<span class="text-sm">{cat.name}</span>
-						<span class="font-mono text-sm text-muted-foreground">{formatCurrency(cat.expense)}</span>
-					</div>
-				{/each}
-			</div>
-		</CardContent>
-	</Card>
-{/if}
+<div class="grid gap-4 md:grid-cols-2 mb-6">
+	{#if data.monthlyExpenses.length > 0}
+		<Card>
+			<CardHeader>
+				<CardTitle>Gastos por mês</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<MonthlyExpensesChart data={data.monthlyExpenses} />
+			</CardContent>
+		</Card>
+	{/if}
+
+	{#if data.categoryTotals.length > 0}
+		<Card>
+			<CardHeader>
+				<CardTitle>Top categorias</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<CategoryBreakdownChart data={data.categoryTotals} />
+			</CardContent>
+		</Card>
+	{/if}
+</div>

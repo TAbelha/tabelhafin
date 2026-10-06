@@ -4,7 +4,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
+	import { Field, FieldLabel } from '$lib/components/ui/field';
 	import * as Select from '$lib/components/ui/select';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { TRANSACTION_CATEGORIES } from '$lib/utils/categories';
@@ -19,6 +19,7 @@
 	let accountId = $state('');
 	let notes = $state('');
 	let submitting = $state(false);
+	let error: string | null = $state(null);
 
 	const ACCOUNTS: Array<{ id: string; name: string }> = data.accounts ?? [];
 
@@ -50,7 +51,12 @@
 			const res = await fetch('?/create', { method: 'POST', body: formData });
 			if (res.ok) {
 				await goto(resolve('/transactions'));
+			} else {
+				const result: { data?: { error?: string } } = await res.json();
+				error = result?.data?.error ?? 'Erro ao salvar transação.';
 			}
+		} catch {
+			error = 'Erro de conexão ao salvar transação.';
 		} finally {
 			submitting = false;
 		}
@@ -67,14 +73,17 @@
 	<Card>
 		<CardContent class="pt-6">
 			<form onsubmit={handleSubmit} class="flex flex-col gap-4">
-				<div>
-					<Label for="description">Descrição</Label>
+			{#if error}
+				<p class="text-sm text-destructive">{error}</p>
+			{/if}
+				<Field>
+					<FieldLabel for="description">Descrição</FieldLabel>
 					<Input id="description" bind:value={description} required placeholder="Ex: Almoço no restaurante" />
-				</div>
+				</Field>
 
 				<div class="grid grid-cols-2 gap-4">
-					<div>
-						<Label for="amount">Valor (R$)</Label>
+					<Field>
+						<FieldLabel for="amount">Valor (R$)</FieldLabel>
 						<Input
 							id="amount"
 							type="text"
@@ -84,16 +93,16 @@
 							oninput={handleAmountInput}
 							required
 						/>
-					</div>
-					<div>
-						<Label for="date">Data</Label>
+					</Field>
+					<Field>
+						<FieldLabel for="date">Data</FieldLabel>
 						<Input id="date" type="date" bind:value={date} required />
-					</div>
+					</Field>
 				</div>
 
 				<div class="grid grid-cols-2 gap-4">
-					<div>
-						<Label>Categoria</Label>
+					<Field>
+						<FieldLabel>Categoria</FieldLabel>
 						<Select.Root type="single" bind:value={category}>
 							<Select.Trigger>
 								<Select.Value />
@@ -104,10 +113,10 @@
 								{/each}
 							</Select.Content>
 						</Select.Root>
-					</div>
+					</Field>
 					{#if ACCOUNTS.length > 0}
-						<div>
-							<Label>Conta</Label>
+						<Field>
+							<FieldLabel>Conta</FieldLabel>
 							<Select.Root type="single" bind:value={accountId}>
 								<Select.Trigger>
 									<Select.Value placeholder="Selecione" />
@@ -118,14 +127,14 @@
 									{/each}
 								</Select.Content>
 							</Select.Root>
-						</div>
+						</Field>
 					{/if}
 				</div>
 
-				<div>
-					<Label for="notes">Observações</Label>
+				<Field>
+					<FieldLabel for="notes">Observações</FieldLabel>
 					<Textarea id="notes" bind:value={notes} rows={2} placeholder="Opcional" />
-				</div>
+				</Field>
 
 				<div class="flex gap-2 pt-2">
 					<Button type="submit" disabled={submitting}>

@@ -15,9 +15,15 @@ function getAuth(db: D1Database): Auth {
   return cachedAuth;
 }
 
+function generateNonce(): string {
+  const array = new Uint8Array(16);
+  crypto.getRandomValues(array);
+  return btoa(String.fromCharCode(...array));
+}
+
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'wasm-unsafe-eval'",
+  "script-src 'self' 'wasm-unsafe-eval' 'nonce-NONCE_PLACEHOLDER'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
@@ -55,6 +61,9 @@ export const handle: Handle = async ({ event, resolve }) => {
     };
   }
 
+  const nonce = generateNonce();
+  event.locals.nonce = nonce;
+
   const response = await svelteKitHandler({
     event,
     resolve,
@@ -69,7 +78,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     "Permissions-Policy",
     "camera=(), microphone=(), geolocation=(), payment=(), usb=",
   );
-  response.headers.set("Content-Security-Policy", CSP);
+  response.headers.set("Content-Security-Policy", CSP.replace("NONCE_PLACEHOLDER", nonce));
 
   if (event.url.protocol === "https:") {
     response.headers.set(
