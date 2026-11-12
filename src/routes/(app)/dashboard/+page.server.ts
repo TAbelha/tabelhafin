@@ -28,13 +28,23 @@ export const load = async ({
   ]);
 
   // Single 12-month query covers everything
-  const twelveMonthsAgo = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 11, 1));
-  const allTx = await getTransactionsInRange(db, locals.userId, twelveMonthsAgo, to);
+  const twelveMonthsAgo = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 11, 1),
+  );
+  const allTx = await getTransactionsInRange(
+    db,
+    locals.userId,
+    twelveMonthsAgo,
+    to,
+  );
 
   // Current month's transactions for summary
   const txRows = allTx.filter((tx) => {
     const d = new Date(tx.date);
-    return d.getUTCFullYear() === from.getUTCFullYear() && d.getUTCMonth() === from.getUTCMonth();
+    return (
+      d.getUTCFullYear() === from.getUTCFullYear() &&
+      d.getUTCMonth() === from.getUTCMonth()
+    );
   });
 
   // Monthly expenses grouped with Map (no repeated Date construction)
@@ -42,15 +52,26 @@ export const load = async ({
   for (const tx of allTx) {
     if (tx.amount >= 0) continue;
     const key = tx.date.toISOString().slice(0, 7); // "YYYY-MM"
-    expenseByMonth.set(key, (expenseByMonth.get(key) ?? 0) + Math.abs(tx.amount));
+    expenseByMonth.set(
+      key,
+      (expenseByMonth.get(key) ?? 0) + Math.abs(tx.amount),
+    );
   }
 
   const monthlyExpenses: { month: string; amount: number }[] = [];
   for (let i = 11; i >= 0; i--) {
-    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1));
-    const monthLabel = d.toLocaleDateString("pt-BR", { month: "short", year: "2-digit" });
+    const d = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1),
+    );
+    const monthLabel = d.toLocaleDateString("pt-BR", {
+      month: "short",
+      year: "2-digit",
+    });
     const key = d.toISOString().slice(0, 7);
-    monthlyExpenses.push({ month: monthLabel, amount: expenseByMonth.get(key) ?? 0 });
+    monthlyExpenses.push({
+      month: monthLabel,
+      amount: expenseByMonth.get(key) ?? 0,
+    });
   }
 
   const accountTypeById = new Map(

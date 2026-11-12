@@ -35,8 +35,7 @@ export const actions: Actions = {
     if (!amountRaw) return fail(400, { error: "Valor obrigatório." });
 
     const amount = parseCents(amountRaw);
-    if (amount === null)
-      return fail(400, { error: "Valor inválido." });
+    if (amount === null) return fail(400, { error: "Valor inválido." });
 
     const [year, month, day] = nextChargeDate.split("-").map(Number);
     const date = new Date(Date.UTC(year, month - 1, day));

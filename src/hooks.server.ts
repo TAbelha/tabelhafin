@@ -78,7 +78,10 @@ export const handle: Handle = async ({ event, resolve }) => {
     "Permissions-Policy",
     "camera=(), microphone=(), geolocation=(), payment=(), usb=",
   );
-  response.headers.set("Content-Security-Policy", CSP.replace("NONCE_PLACEHOLDER", nonce));
+  response.headers.set(
+    "Content-Security-Policy",
+    CSP.replace("NONCE_PLACEHOLDER", nonce),
+  );
 
   if (event.url.protocol === "https:") {
     response.headers.set(
