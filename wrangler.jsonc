@@ -22,6 +22,6 @@
     },
   ],
   "vars": {
-    "BETTER_AUTH_URL": "https://tabelhafin.ianptkcs.workers.dev",
+    "BETTER_AUTH_URL": "https://tabelhafin.tabelhadev.workers.dev",
   },
 }
